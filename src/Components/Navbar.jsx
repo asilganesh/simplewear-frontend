@@ -1,0 +1,155 @@
+import React, { useState } from "react";
+import logo from "../assets/logo.png";
+import { Link, useLocation } from "react-router-dom";
+import { IoIosSearch } from "react-icons/io";
+import { HiOutlineUser } from "react-icons/hi2";
+import { IoBagOutline } from "react-icons/io5";
+import { CiMenuFries } from "react-icons/ci";
+import { IoMdClose } from "react-icons/io";
+
+
+const Navbar = () => {
+  const location = useLocation();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const isActive = (path) => location.pathname === path;
+
+
+ 
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
+
+  return (
+    <>
+      <div className="w-full flex justify-center">
+        <nav className="h-28 flex p-5 xsm:justify-between  w-full max-w-1500" >
+          <div className="logo flex-none w-82 items-center justify-center  ">
+            <img
+              src={logo}
+              alt="SimpleWear"
+              className="xsm:h-6 xsm:mt-6 sm:h-8  sm:mt-4"
+            />
+          </div>
+
+          <div className="navigations flex w-full justify-center items-center gap-x-8 lg:flex xsm:hidden text-1xl text-gray-700 font-sans font-semibold ">
+            <Link
+              to="/"
+              className={`hover:text-blue-500 ${
+                isActive("/") ? "border-b-2 border-blue-500 pb-2" : ""
+              }`}
+            >
+              Home
+            </Link>
+            <Link
+              to="/collection"
+              className={`hover:text-blue-500 ${
+                isActive("/collection") ? "border-b-2 border-blue-500 pb-2" : ""
+              }`}
+            >
+              Collection
+            </Link>
+            <Link
+              to="/about"
+              className={`hover:text-blue-500 ${
+                isActive("/about") ? "border-b-2 border-blue-500 pb-2" : ""
+              }`}
+            >
+              About
+            </Link>
+            <Link
+              to="/contact"
+              className={`hover:text-blue-500 ${
+                isActive("/contact") ? "border-b-2 border-blue-500 pb-2" : ""
+              }`}
+            >
+              Contact
+            </Link>
+            <Link
+              to="/myOrders"
+              className={`hover:text-blue-500 ${
+                isActive("/myOrders") ? "border-b-2 border-blue-500 pb-2" : ""
+              }`}
+            >
+              My Orders
+            </Link>
+          </div>
+
+          <div className="icons flex sm:gap-x-7 justify-center items-center text-2xl xsm:gap-x-3">
+        
+
+            <Link
+              to="/collection">
+             <IoIosSearch className="hover:text-gray-500" />
+            </Link>
+            
+            <Link
+              to="/auth">
+            <HiOutlineUser className=" hover:text-gray-500" />
+            </Link>
+            
+            <Link
+              to="/cart">
+             <IoBagOutline className=" hover:text-gray-500" />
+            </Link>
+            <CiMenuFries
+              className="menuIcon lg:hidden md:flex hover:text-gray-500"
+              onClick={toggleDrawer} 
+            />
+          </div>
+        </nav>
+      </div>
+  {/* Side Drawer */}
+  <div
+        className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg transition-transform transform ${
+          isDrawerOpen ? "translate-x-0" : "translate-x-full"
+        } duration-300 ease-in-out`}
+      >
+        {/* Drawer Content */}
+        <div className="flex flex-col p-4">
+          <button onClick={toggleDrawer} className="text-right mb-4 ">
+          <IoMdClose />
+         
+          </button>
+          <Link to="/" className={`mb-4 p-2 border-b-2 text-center ${
+                isActive("/") ? "bg-black text-white " : ""
+              }`} onClick={toggleDrawer}>
+            Home
+          </Link>
+          <Link to="/collection" className={`mb-4 p-2 border-b-2 text-center ${
+                isActive("/collection") ? "bg-black text-white " : ""
+              }`} onClick={toggleDrawer}>
+            Collection
+          </Link>
+          <Link to="/about" className={`mb-4 p-2 border-b-2 text-center ${
+                isActive("/about") ? "bg-black text-white " : ""
+              }`} onClick={toggleDrawer}>
+            About
+          </Link>
+          <Link to="/contact"className={`mb-4 p-2 border-b-2 text-center ${
+                isActive("/contact") ? "bg-black text-white " : ""
+              }`} onClick={toggleDrawer}>
+            Contact
+          </Link>
+          <Link to="/myOrders" className={`mb-4 p-2 border-b-2 text-center ${
+                isActive("/myOrders") ? "bg-black text-white " : ""
+              }`} onClick={toggleDrawer}>
+            My Orders
+          </Link>
+        </div>
+      </div>
+
+      {/* Overlay for closing the drawer by clicking outside */}
+  {isDrawerOpen && (
+    <div
+      className="fixed top-0 left-0 h-full bg-black opacity-50"
+      style={{ width: `calc(100% - 16rem)` }}  
+      onClick={toggleDrawer}
+    ></div>
+  )}
+    
+    </>
+  );
+};
+
+export default Navbar;
