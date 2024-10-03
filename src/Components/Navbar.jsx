@@ -103,7 +103,7 @@ const Navbar = () => {
   <div
         className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg transition-transform transform ${
           isDrawerOpen ? "translate-x-0" : "translate-x-full"
-        } duration-300 ease-in-out`}
+        } duration-300 ease-in-out z-10`}
       >
         {/* Drawer Content */}
         <div className="flex flex-col p-4">
