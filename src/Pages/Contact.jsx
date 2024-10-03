@@ -14,7 +14,7 @@ const Contact = () => {
 
           <div className="flex ">
             <img src={phone} alt="image" className=" w-1/2" />
-            <div className="flex flex-col gap-y-8 p-10 text-gray-500">
+            <div className="flex flex-col gap-y-8g p-10 text-gray-500">
               <div>
                 Thank you for your interest in Simplewear! We are here to assist
                 you with any questions, feedback, or concerns you may have. Our
