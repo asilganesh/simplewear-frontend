@@ -6,9 +6,9 @@ const Contact = () => {
     <>
       <div className="home max-w-[1200px] w-[80vw] mx-auto">
         <section className="mb-10">
-          <div class="text-center my-10">
-            <p class="text-gray-500">
-              CONTACT <span class="text-gray-700 font-medium">US</span>
+          <div className="text-center my-10">
+            <p className="text-gray-500">
+              CONTACT <span className="text-gray-700 font-medium">US</span>
             </p>
           </div>
 

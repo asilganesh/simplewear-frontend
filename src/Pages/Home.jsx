@@ -10,7 +10,7 @@ import ProductCard from "../Components/ProductCard";
 import { RiExchangeFundsLine } from "react-icons/ri";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 import { AiFillCustomerService } from "react-icons/ai";
-
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -37,15 +37,24 @@ const Home = () => {
 
   return (
     <div className="home max-w-[1200px] w-[80vw] mx-auto">
-      <section className="banner relative m-2 mb-20 "style={{height:"70vh"}}>
+      <section
+        className="banner relative m-2 mb-20 "
+        style={{ height: "70vh" }}
+      >
         <img
           src={hangedTshirts}
           alt="Banner Image"
           className="w-full object-cover border-gray-400 border xsm:h-full "
-          
         />
 
-        <div className="bannerTitle flex flex-col lg:gap-y-4  md:gap-y-2  xsm:gap-y-0 items-center absolute z-10 text-white font-serif top-2/3 left-1/4 transform -translate-x-1/2 -translate-y-1/2 text-center p-4">
+        <div
+          className="bannerTitle flex flex-col 
+        lg:gap-y-4  md:gap-y-2 
+         xsm:gap-y-0 items-center 
+         absolute 
+        z-10 text-white font-serif top-2/3 left-1/4 
+        transform -translate-x-1/2 -translate-y-1/2 text-center p-4"
+        >
           <p className="xsm:text-sm md:text-xl lg:text-2xl">
             Sales up to 50% Off
           </p>
@@ -59,7 +68,7 @@ const Home = () => {
           flex justify-between drop-shadow-md
          hover:bg-black hover:text-white hover:scale-110 hover:transition-transform`}
           >
-            Shop Now <FaArrowRightLong className="mt-1" />
+            <Link to='/collection'>Shop Now</Link> <FaArrowRightLong className="mt-1" />
           </button>
         </div>
       </section>
@@ -77,6 +86,7 @@ const Home = () => {
             ? latestCollectionsArr().map((item, index) => (
                 <ProductCard
                   key={index}
+                  productId={item._id}
                   imgLink={item.image[0]}
                   title={item.name}
                   price={item.price}
@@ -99,6 +109,7 @@ const Home = () => {
             ? bestSellers().map((item, index) => (
                 <ProductCard
                   key={index}
+                  productId={item._id}
                   imgLink={item.image[0]}
                   title={item.name}
                   price={item.price}
@@ -109,28 +120,28 @@ const Home = () => {
       </section>
 
       <section className="whyUS my-20 ">
-      <div
-        className="flex flex-col sm:flex-row justify-around gap-12 sm:gap-2 
+        <div
+          className="flex flex-col sm:flex-row justify-around gap-12 sm:gap-2 
       text-center py-20 xsm:text-xs sm:text-sm md:text-base text-gray-700"
-      >
-        <div className="flex flex-col items-center">
-          <RiExchangeFundsLine className="mb-4 text-5xl" />
-          <p class=" font-semibold">Easy Exchange Policy</p>
-          <p class=" text-gray-400">We offer hassle free exchange policy</p>
-        </div>
+        >
+          <div className="flex flex-col items-center">
+            <RiExchangeFundsLine className="mb-4 text-5xl" />
+            <p className= "font-semibold">Easy Exchange Policy</p>
+            <p className= "text-gray-400">We offer hassle free exchange policy</p>
+          </div>
 
-        <div className="flex flex-col items-center">
-          <RiVerifiedBadgeFill className="mb-4 text-5xl" />
-          <p class=" font-semibold">7 Days Return Policy</p>
-          <p class=" text-gray-400">We provide 7 days free return policy</p>
-        </div>
+          <div className="flex flex-col items-center">
+            <RiVerifiedBadgeFill className="mb-4 text-5xl" />
+            <p className= "font-semibold">7 Days Return Policy</p>
+            <p className= "text-gray-400">We provide 7 days free return policy</p>
+          </div>
 
-        <div className="flex flex-col items-center">
-          <AiFillCustomerService className="mb-4 text-5xl" />
-          <p class=" font-semibold">Best customer support</p>
-          <p class=" text-gray-400">we provide 24/7 customer support</p>
+          <div className="flex flex-col items-center">
+            <AiFillCustomerService className="mb-4 text-5xl" />
+            <p className= "font-semibold">Best customer support</p>
+            <p className= "text-gray-400">we provide 24/7 customer support</p>
+          </div>
         </div>
-      </div>
       </section>
     </div>
   );

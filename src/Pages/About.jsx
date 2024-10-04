@@ -23,8 +23,8 @@ const About = () => {
 
         <section className="aboutUs my-10">
           <div className="text-center mb-10">
-            <p class="text-gray-500">
-              ABOUT <span class="text-gray-700 font-medium">US</span>
+            <p className="text-gray-500">
+              ABOUT <span className="text-gray-700 font-medium">US</span>
             </p>
           </div>
           <div className="grid lg:grid-rows-2 lg:grid-cols-2 gap-5 md:grid-rows-1">

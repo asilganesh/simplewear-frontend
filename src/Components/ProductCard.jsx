@@ -1,8 +1,10 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
-const ProductCard = ({imgLink, title, price}) => {
+const ProductCard = ({productId,imgLink, title, price}) => {
   return (
-    <div >
+   <Link to={`/productDetails/${productId} ` }  target="_blank">
+    <div className='cursor-pointer' >
               <div className='overflow-hidden'>
               <img
                 src={imgLink}
@@ -13,6 +15,7 @@ const ProductCard = ({imgLink, title, price}) => {
               <div className='text-gray-500 text-sm pt-3 pb-1 font-medium'>{title}</div>
               <div className='text-gray-500 text-sm font-medium'>${price}</div>
             </div>
+   </Link>
   )
 }
 

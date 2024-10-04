@@ -3,12 +3,15 @@ import ProductCard from "../Components/ProductCard";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../Redux/productReducer";
 import { IoMdClose } from "react-icons/io";
+import { CiSearch } from "react-icons/ci";
+
 
 const Collection = () => {
   const [productsArr, setProductsArr] = useState([]);
   const { products } = useSelector((state) => state.productReducer);
   const [sortOrder, setSortOrder] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [searchText, setSearchText] = useState(""); 
 
   // Filters
   const [men, setMen] = useState(false);
@@ -27,12 +30,24 @@ const Collection = () => {
   useEffect(() => {
     let filteredProducts = [];
 
-    if (men) {
+    if (searchText.length>0) {
+      filteredProducts = [
+        ...products.filter((product) =>{
+          let value = [product.name,product.category,product.subCategory]
+          return value.some(val=>val.toLowerCase().includes(searchText.toLowerCase()))
+        }),
+        ...filteredProducts,
+      ];
+    
+    }
+
+    if(men){
       filteredProducts = [
         ...products.filter((product) => product.category === "Men"),
         ...filteredProducts,
       ];
     }
+
     if (women) {
       filteredProducts = [
         ...products.filter((product) => product.category === "Women"),
@@ -63,8 +78,9 @@ const Collection = () => {
         ...filteredProducts,
       ];
     }
-    if (!men && !women && !kids && !topWear && !bottomWear && !winterWear) {
+    if (!men && !women && !kids && !topWear && !bottomWear && !winterWear && searchText<=0 ) {
       filteredProducts = [...products];
+      
     }
 
     if (sortOrder === "low-high") {
@@ -74,7 +90,8 @@ const Collection = () => {
     }
 
     setProductsArr(filteredProducts);
-  }, [products, men, women, kids, topWear, bottomWear, winterWear, sortOrder]);
+  
+  }, [products, men, women, kids, topWear, bottomWear, winterWear, sortOrder, searchText]);
 
   const changeFilter = (filter) => {
     switch (filter) {
@@ -112,13 +129,14 @@ const Collection = () => {
   return (
     <>
       <div className="home max-w-[1200px] w-[80vw] mx-auto ">
+       
         <div className=" my-10 md:flex gap-10">
           <section className="filters  w-1/4 xsm:hidden md:inline">
             <div className="font-sans text-3xl text-gray-600 font-medium text-start mb-10">
               Filters
             </div>
             <div className="border border-gray-300 pl-5 py-3 mt-6 hidden sm:block">
-              <p class="mb-3 text-sm font-medium">CATEGORIES</p>
+              <p className="mb-3 text-sm font-medium">CATEGORIES</p>
               <div>
                 <label htmlFor="men">
                   <input
@@ -158,7 +176,7 @@ const Collection = () => {
             </div>
 
             <div className="border border-gray-300 pl-5 py-3 mt-6 hidden sm:block">
-              <p class="mb-3 text-sm font-medium">TYPE</p>
+              <p className="mb-3 text-sm font-medium">TYPE</p>
               <div>
                 <label htmlFor="topWear">
                   <input
@@ -209,15 +227,34 @@ const Collection = () => {
           </section>
 
           <section className="collections md:w-2/3  xsm:w-full ">
+          <div className= "text-left">
+            <div
+              className="inline-flex items-center justify-center border
+             border-gray-400 px-5 py-2 my-5 mx-3 rounded-full w-3/4  gap-x-1
+             sm:w-1/2"
+            >
+              <input
+                className="flex-1 outline-none  text-sm"
+                type="text"
+                placeholder="Search..."
+                value={searchText} 
+                onChange={(e) => setSearchText(e.target.value)}
+              />
+             
+              <CiSearch className="hover:text-gray-500  text-xl" />
+
+            </div>
+          </div>
             <div className="md:text-5xl sm:text-3xl xsm:text-2xl font-roboto text-gray-600 mb-10 flex justify-between">
               <p>
                 {" "}
                 All{" "}
                 <span className="text-gray-600 font-medium">Collections</span>
               </p>
-              <p className="md:hidden font-sans text-xl text-gray-600 
+              <p
+                className="md:hidden font-sans text-xl text-gray-600 
               font-medium  p-1 px-2 border-black border-2 "
-              onClick={toggleDrawer}
+                onClick={toggleDrawer}
               >
                 Filters{" "}
               </p>
@@ -228,12 +265,13 @@ const Collection = () => {
                 ? productsArr.map((item, index) => (
                     <ProductCard
                       key={index}
+                      productId={item._id}
                       imgLink={item.image[0]}
                       title={item.name}
                       price={item.price}
                     />
                   ))
-                : "Loading..."}
+                :searchText.length>0 && productsArr.length<=0 ?"No Producs found, Please try with New Search": "Loading..." }
             </div>
           </section>
         </div>
@@ -251,7 +289,7 @@ const Collection = () => {
             <IoMdClose />
           </button>
           <div className="border border-gray-300 pl-5 py-3 mt-6  ">
-            <p class="mb-3 text-sm font-medium">CATEGORIES</p>
+            <p className="mb-3 text-sm font-medium">CATEGORIES</p>
             <div>
               <label htmlFor="men">
                 <input
@@ -291,7 +329,7 @@ const Collection = () => {
           </div>
 
           <div className="border border-gray-300 pl-5 py-3 mt-6  ">
-            <p class="mb-3 text-sm font-medium">TYPE</p>
+            <p className="mb-3 text-sm font-medium">TYPE</p>
             <div>
               <label htmlFor="topWear">
                 <input

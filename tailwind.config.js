@@ -6,6 +6,12 @@ module.exports = {
         1500: "1500px",
       },
       containerWidth: { maxWidth: "1200px", width: "80vw", margin: "0 auto" },
+      height: {
+        h25:"25%",
+      },
+      width: {
+        w18:"18%"
+      }
     },
     screens: {
       xsm: "320px",
