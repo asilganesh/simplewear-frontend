@@ -5,6 +5,7 @@ import fetchProductsAsync from "../api/products"
 
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async() => {
     const response = await fetchProductsAsync()
+    
     return response
 })
 
@@ -23,7 +24,7 @@ export const productReducer = createReducer(initialState,(builder) => {
     })
     .addCase(fetchProducts.fulfilled,(state,action) => {
         state.loading = false;
-            state.products = action.payload.products;  
+            state.products = action.payload.products
             state.status = smStates.IS_SUCCESSFUL;
             if(!action.payload){
                 state.status = smStates.IS_SUCCESS_BUT_NO_DATA

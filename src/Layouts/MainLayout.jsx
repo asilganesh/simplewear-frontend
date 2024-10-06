@@ -9,6 +9,7 @@ import Contact from '../Pages/Contact'
 import Cart from '../Pages/Cart'
 import MyOrders from '../Pages/MyOrders'
 import ProductDetails from '../Pages/ProductDetails'
+import Checkout from '../Pages/Checkout'
 
 const MainLayout = () => {
   return (
@@ -23,6 +24,7 @@ const MainLayout = () => {
         <Route  path='/cart' element={<Cart/>}/>
         <Route  path='/myOrders' element={<MyOrders/>}/>
         <Route  path='/productDetails/:id' element={<ProductDetails/>}/>
+        <Route  path='/place-order' element={<Checkout/>}/>
       </Routes>
       
       <Footer/>

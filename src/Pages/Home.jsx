@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 const Home = () => {
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.productReducer);
-
+console.log(products)
   const latestCollectionsArr = () => {
     const collections = [];
     for (let i = 1; i <= 10; i++) {
@@ -32,6 +32,7 @@ const Home = () => {
   };
 
   useEffect(() => {
+  
     dispatch(fetchProducts());
   }, []);
 

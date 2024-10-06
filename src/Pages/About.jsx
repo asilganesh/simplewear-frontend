@@ -16,7 +16,7 @@ const About = () => {
           />
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center ">
             <h1 className="lg:text-4xl md:text-3xl font-sans font-medium text-white ">
-              <Link to="/">Home</Link> > About Us{" "}
+              <Link to="/">Home</Link> &gt; About Us{" "}
             </h1>
           </div>
         </section>
