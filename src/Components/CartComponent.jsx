@@ -68,7 +68,7 @@ const CartComponent = ({product}) => {
   
     </select>
   </div>
-  <p className='text-lg text-black font-medium '>${product.price}</p>
+  <p className='text-lg text-black font-medium '>&#x20B9;{product.price * 10}</p>
 </div >
 <IoCloseOutline  className='text-2xl ' onClick={()=>removeItem(product)}/>
 </div>

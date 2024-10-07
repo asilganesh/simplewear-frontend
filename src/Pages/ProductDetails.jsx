@@ -65,6 +65,10 @@ const ProductDetails = () => {
 
     product = { ...product, sizes: size, quantity: 1 };
     dispatch(addToCart(product));
+    toast.success( 'Item added to Cart', {
+      position: "top-right",
+      autoClose: 2000,
+    });
   };
 
   return (
@@ -96,7 +100,7 @@ const ProductDetails = () => {
                 {selectedProduct.name}
               </h1>
               <h1 className="mt-5 text-3xl font-medium">
-                ${selectedProduct.price}
+              &#x20B9;{selectedProduct.price*10}
               </h1>
               <p className="mt-5 text-gray-500 md:w-4/5">
                 {selectedProduct.description}

@@ -5,7 +5,6 @@ import smStates from "../utils/sm_states/index"
 
 export const addToMyOrders = createAsyncThunk('addToMyOrdersList', async(data) => {
     
-    debugger;
     return data
 })
 
@@ -24,7 +23,7 @@ export const myOrdersReducer = createReducer(initialState,(builder) => {
     })
     .addCase(addToMyOrders.fulfilled,(state,action) => {
         state.loading = false;
-            state.myOrders = action.payload
+            state.myOrders =[... action.payload,...state.myOrders]
             state.status = smStates.IS_SUCCESSFUL;
             
     })

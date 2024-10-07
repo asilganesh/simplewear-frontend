@@ -55,14 +55,98 @@ const Checkout = () => {
     }
 
     const myOrders = cart.map((val) => {
-      return { ...val, orderStatus: "Order Placed" };
+      const date = new Date();
+      const formattedDate = ` ${date.toDateString()}`;
+      return {
+        ...val,
+        orderStatus: "Order Placed",
+        Payment: paymenttype,
+        Date: formattedDate,
+      };
     });
 
-    await dispatch(addToMyOrders(myOrders));
+    if (paymenttype === "COD") {
+      dispatch(addToMyOrders(myOrders));
 
-    await dispatch(clearCart());
+      dispatch(clearCart());
 
-    navigate("/myOrders");
+      navigate("/myOrders");
+    }
+
+    if (paymenttype === "RAZORPAY") {
+      const loadScript = (src) => {
+        return new Promise((resolve) => {
+          const script = document.createElement("script");
+          script.src = src;
+
+          script.onload = () => {
+            resolve(true);
+          };
+
+          script.onerror = () => {
+            resolve(false);
+          };
+
+          document.body.appendChild(script);
+        });
+      };
+
+      const displayRazorpay = async (amount) => {
+        const res = await loadScript(
+          "https://checkout.razorpay.com/v1/checkout.js"
+        );
+
+        if (!res) {
+          
+          toast.error("Youre are Offline, Failed to Load", {
+            position: "top-right",
+            autoClose: 2000,
+          });
+          return;
+        }
+
+        const options = {
+          key: "rzp_test_pfT68y3HSv5bW8",
+          currency: "INR",
+          amount: amount * 100,
+          name: "Simple Wear",
+          description: "thanks for purchasing",
+          payment_capture: "1", // Auto-capture payment
+          handler: function (response) {
+          
+            toast.success( `Payment Successful with paymentId: ${response.razorpay_payment_id}`, {
+              position: "top-right",
+              autoClose: 2000,
+            });
+            dispatch(addToMyOrders(myOrders));
+
+            dispatch(clearCart());
+
+            navigate("/myOrders");
+          },
+          
+          method: {
+            upi: true, // Enabling UPI as a payment option
+          },
+        };
+
+        const paymentObject = new window.Razorpay(options);
+
+        paymentObject.on("payment.failed", function (response) {
+         
+          toast.error( `Payment Failed: ${response.error.description}`, {
+            position: "top-right",
+            autoClose: 2000,
+          });
+        });
+
+        paymentObject.open();
+
+      
+      };
+
+      displayRazorpay(cartTotal+10);
+    }
   };
   return (
     <>
@@ -193,16 +277,16 @@ const Checkout = () => {
               <div className="p-5 flex flex-col gap-2">
                 <p className="flex justify-between">
                   <span className="text-gray-500">Cart Total</span>{" "}
-                  <span className="text-black font-medium">${cartTotal}</span>
+                  <span className="text-black font-medium">&#x20B9;{cartTotal*10}</span>
                 </p>
                 <p className="flex justify-between">
                   <span className="text-gray-500">Shipping Fee</span>{" "}
-                  <span className="text-black font-medium">$10</span>
+                  <span className="text-black font-medium">&#x20B9;40</span>
                 </p>
               </div>
               <div className=" p-4 flex flex-col gap-4">
                 <p className="flex justify-between text-base font-bold">
-                  <span>Total Amount</span> <span>${cartTotal + 10}</span>
+                  <span>Total Amount</span> <span>&#x20B9;{cartTotal*10 + 40}</span>
                 </p>
                 <div className="text-xl text-gray-700">
                   Payment <span className="font-medium">Method</span>
@@ -210,11 +294,11 @@ const Checkout = () => {
                 <div className="flex justify-evenly gap-2">
                   <div
                     className="flex items-center sm:gap-3 xsm:gap1 border sm:p-2  sm:px-3 xsm:px-1 cursor-pointer"
-                    onClick={() => setPaymentType("RAZ")}
+                    onClick={() => setPaymentType("RAZORPAY")}
                   >
                     <p
                       className={`min-w-3.5 h-3.5 border rounded-full ${
-                        paymenttype == "RAZ" ? "bg-green-400" : ""
+                        paymenttype == "RAZORPAY" ? "bg-green-400" : ""
                       }`}
                     ></p>
                     <img className="h-4 mx-4" src={razorPayLogo} alt="" />

@@ -57,7 +57,6 @@ export const cartReducer = createReducer(initialState, (builder) => {
 
       if (!state.cart.length) {
         state.cart = [...state.cart, action.payload];
-        debugger;
       } else {
         const existingProduct = state.cart.find(
           (item) =>

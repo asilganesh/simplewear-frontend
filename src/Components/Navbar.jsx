@@ -87,10 +87,10 @@ const Navbar = () => {
              <IoIosSearch className="hover:text-gray-500" />
             </Link>
             
-            <Link
+            {/* <Link
               to="/auth">
             <HiOutlineUser className=" hover:text-gray-500" />
-            </Link>
+            </Link> */}
             
             <Link
               to="/cart">

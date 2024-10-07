@@ -1,11 +1,11 @@
-import React from 'react'
+// import React from 'react'
 
-const AuthLayout = () => {
-  return (
-    <div>
-      Login.Register
-    </div>
-  )
-}
+// const AuthLayout = () => {
+//   return (
+//     <div>
+//       Login.Register
+//     </div>
+//   )
+// }
 
-export default AuthLayout
+// export default AuthLayout
