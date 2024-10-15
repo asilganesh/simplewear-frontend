@@ -9,7 +9,7 @@ import { CiSearch } from "react-icons/ci";
 const Collection = () => {
   const [productsArr, setProductsArr] = useState([]);
   const { products } = useSelector((state) => state.productReducer);
-  const [sortOrder, setSortOrder] = useState("");
+
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [searchText, setSearchText] = useState(""); 
 
@@ -20,80 +20,20 @@ const Collection = () => {
   const [topWear, setTopWear] = useState(false);
   const [bottomWear, setBottomWear] = useState(false);
   const [winterWear, setWinterWear] = useState(false);
+  const [sortOrder, setSortOrder] = useState(null);
+  
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
-
-  useEffect(() => {
-    let filteredProducts = [];
-
-    if (searchText.length>0) {
-      filteredProducts = [
-        ...products.filter((product) =>{
-          let value = [product.name,product.category,product.subCategory]
-          return value.some(val=>val.toLowerCase().includes(searchText.toLowerCase()))
-        }),
-        ...filteredProducts,
-      ];
     
-    }
-
-    if(men){
-      filteredProducts = [
-        ...products.filter((product) => product.category === "Men"),
-        ...filteredProducts,
-      ];
-    }
-
-    if (women) {
-      filteredProducts = [
-        ...products.filter((product) => product.category === "Women"),
-        ...filteredProducts,
-      ];
-    }
-    if (kids) {
-      filteredProducts = [
-        ...products.filter((product) => product.category === "Kids"),
-        ...filteredProducts,
-      ];
-    }
-    if (topWear) {
-      filteredProducts = [
-        ...products.filter((product) => product.subCategory === "Topwear"),
-        ...filteredProducts,
-      ];
-    }
-    if (bottomWear) {
-      filteredProducts = [
-        ...products.filter((product) => product.subCategory === "Bottomwear"),
-        ...filteredProducts,
-      ];
-    }
-    if (winterWear) {
-      filteredProducts = [
-        ...products.filter((product) => product.subCategory === "Winterwear"),
-        ...filteredProducts,
-      ];
-    }
-    if (!men && !women && !kids && !topWear && !bottomWear && !winterWear && searchText<=0 ) {
-      filteredProducts = [...products];
-      
-    }
-
-    if (sortOrder === "low-high") {
-      filteredProducts.sort((a, b) => a.price - b.price);
-    } else if (sortOrder === "high-low") {
-      filteredProducts.sort((a, b) => b.price - a.price);
-    }
-
-    setProductsArr(filteredProducts);
   
-  }, [products, men, women, kids, topWear, bottomWear, winterWear, sortOrder, searchText]);
+    dispatch(fetchProducts({men,women,kids,topWear,bottomWear,winterWear,sortOrder}));
+  }, [men,women,kids,topWear,bottomWear,winterWear,sortOrder]);
 
-  const changeFilter = (filter) => {
+
+
+  const handleFilter = (filter) => {
     switch (filter) {
       case "men":
         setMen((prev) => !prev);
@@ -119,7 +59,9 @@ const Collection = () => {
   };
 
   const handleSortChange = (e) => {
+
     setSortOrder(e.target.value);
+    
   };
 
   const toggleDrawer = () => {
@@ -143,7 +85,7 @@ const Collection = () => {
                     type="checkbox"
                     name="men"
                     id="men"
-                    onChange={() => changeFilter("men")}
+                    onChange={() => handleFilter("men")}
                     checked={men}
                   />{" "}
                   <span className="ml-2 text-base">Men</span>
@@ -155,7 +97,7 @@ const Collection = () => {
                     type="checkbox"
                     name="women"
                     id="women"
-                    onChange={() => changeFilter("women")}
+                    onChange={() => handleFilter("women")}
                     checked={women}
                   />{" "}
                   <span className="ml-2 text-base">Women</span>
@@ -167,7 +109,7 @@ const Collection = () => {
                     type="checkbox"
                     name="kids"
                     id="kids"
-                    onChange={() => changeFilter("kids")}
+                    onChange={() => handleFilter("kids")}
                     checked={kids}
                   />{" "}
                   <span className="ml-2 text-base">Kids</span>
@@ -183,7 +125,7 @@ const Collection = () => {
                     type="checkbox"
                     name="topWear"
                     id="topWear"
-                    onChange={() => changeFilter("topWear")}
+                    onChange={() => handleFilter("topWear")}
                     checked={topWear}
                   />{" "}
                   <span className="ml-2 text-base">Top Wear</span>
@@ -195,7 +137,7 @@ const Collection = () => {
                     type="checkbox"
                     name="bottomWear"
                     id="bottomWear"
-                    onChange={() => changeFilter("bottomWear")}
+                    onChange={() => handleFilter("bottomWear")}
                     checked={bottomWear}
                   />{" "}
                   <span className="ml-2 text-base">Bottom Wear</span>
@@ -207,7 +149,7 @@ const Collection = () => {
                     type="checkbox"
                     name="winterWear"
                     id="winterWear"
-                    onChange={() => changeFilter("winterWear")}
+                    onChange={() => handleFilter("winterWear")}
                     checked={winterWear}
                   />{" "}
                   <span className="ml-2 text-base">Winter Wear</span>
@@ -220,9 +162,8 @@ const Collection = () => {
               value={sortOrder}
               onChange={handleSortChange}
             >
-              <option value="">Sort by:</option>
-              <option value="low-high">Price: Low to High</option>
-              <option value="high-low">Price: High to Low</option>
+              <option value="asc">Price: Low to High</option>
+              <option value="desc">Price: High to Low</option>
             </select>
           </section>
 
@@ -261,8 +202,8 @@ const Collection = () => {
             </div>
 
             <div className="collectionsContainer grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-3 xsm:grid-cols-2 gap-4">
-              {productsArr.length > 0
-                ? productsArr.map((item, index) => (
+              {products.length > 0
+                ? products.map((item, index) => (
                     <ProductCard
                       key={index}
                       productId={item._id}
@@ -271,7 +212,7 @@ const Collection = () => {
                       price={item.price}
                     />
                   ))
-                :searchText.length>0 && productsArr.length<=0 ?"No Producs found, Please try with New Search": "Loading..." }
+                : products.length<=0 ?"No Producs found, Please try with New Search": "Loading..." }
             </div>
           </section>
         </div>
@@ -296,7 +237,7 @@ const Collection = () => {
                   type="checkbox"
                   name="men"
                   id="men"
-                  onChange={() => changeFilter("men")}
+                  onChange={() => handleFilter("men")}
                   checked={men}
                 />{" "}
                 <span className="ml-2 text-base">Men</span>
@@ -308,7 +249,7 @@ const Collection = () => {
                   type="checkbox"
                   name="women"
                   id="women"
-                  onChange={() => changeFilter("women")}
+                  onChange={() => handleFilter("women")}
                   checked={women}
                 />{" "}
                 <span className="ml-2 text-base">Women</span>
@@ -320,7 +261,7 @@ const Collection = () => {
                   type="checkbox"
                   name="kids"
                   id="kids"
-                  onChange={() => changeFilter("kids")}
+                  onChange={() => handleFilter("kids")}
                   checked={kids}
                 />{" "}
                 <span className="ml-2 text-base">Kids</span>
@@ -336,7 +277,7 @@ const Collection = () => {
                   type="checkbox"
                   name="topWear"
                   id="topWear"
-                  onChange={() => changeFilter("topWear")}
+                  onChange={() => handleFilter("topWear")}
                   checked={topWear}
                 />{" "}
                 <span className="ml-2 text-base">Top Wear</span>
@@ -348,7 +289,7 @@ const Collection = () => {
                   type="checkbox"
                   name="bottomWear"
                   id="bottomWear"
-                  onChange={() => changeFilter("bottomWear")}
+                  onChange={() => handleFilter("bottomWear")}
                   checked={bottomWear}
                 />{" "}
                 <span className="ml-2 text-base">Bottom Wear</span>
@@ -360,7 +301,7 @@ const Collection = () => {
                   type="checkbox"
                   name="winterWear"
                   id="winterWear"
-                  onChange={() => changeFilter("winterWear")}
+                  onChange={() => handleFilter("winterWear")}
                   checked={winterWear}
                 />{" "}
                 <span className="ml-2 text-base">Winter Wear</span>
@@ -373,9 +314,9 @@ const Collection = () => {
             value={sortOrder}
             onChange={handleSortChange}
           >
-            <option value="">Sort by:</option>
-            <option value="low-high">Price: Low to High</option>
-            <option value="high-low">Price: High to Low</option>
+          
+            <option value="asc">Price: Low to High</option>
+            <option value="desc">Price: High to Low</option>
           </select>
         </div>
       </div>

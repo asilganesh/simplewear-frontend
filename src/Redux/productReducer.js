@@ -3,8 +3,40 @@ import smStates from "../utils/sm_states/index"
 import fetchProductsAsync from "../api/products"
 
 
-export const fetchProducts = createAsyncThunk('products/fetchProducts', async() => {
-    const response = await fetchProductsAsync()
+export const fetchProducts = createAsyncThunk('products/fetchProducts', async(categories=null) => {
+    console.log(categories)
+  
+
+
+    const categoryFilters = [];
+    const subCategoryFilters = [];
+    const {sortOrder} = categories
+
+    if(categories){
+    const { men, women, kids, topWear, bottomWear, winterWear } = categories;
+
+    if (men) categoryFilters.push('Men');
+    if (women) categoryFilters.push('Women');
+    if (kids) categoryFilters.push('Kids');
+    if (topWear) subCategoryFilters.push('Topwear');
+    if (bottomWear) subCategoryFilters.push('Bottomwear');
+    if (winterWear) subCategoryFilters.push('Winterwear');
+    }
+
+    const searchQuery = {
+        filter: {
+            category: {
+                $in: categoryFilters, 
+            },
+            subCategory: {
+                $in: subCategoryFilters,
+            }
+        },
+        sort:{
+            $eq:sortOrder
+        }
+    };
+    const response = await fetchProductsAsync({queryParams : searchQuery})
     
     return response
 })

@@ -15,12 +15,16 @@ import { Link } from "react-router-dom";
 const Home = () => {
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.productReducer);
-console.log(products)
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, []);
+
   const latestCollectionsArr = () => {
-    const collections = [];
-    for (let i = 1; i <= 10; i++) {
-      collections.push(products[i + 3]);
-    }
+    
+    const collections = products.filter((value) => {
+      return value.isLatest === true;
+    });
     return collections;
   };
 
@@ -31,10 +35,7 @@ console.log(products)
     return collections;
   };
 
-  useEffect(() => {
-  
-    dispatch(fetchProducts());
-  }, []);
+
 
   return (
     <div className="home max-w-[1200px] w-[80vw] mx-auto">
