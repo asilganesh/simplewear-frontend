@@ -28,8 +28,8 @@ const Collection = () => {
   useEffect(() => {
     
   
-    dispatch(fetchProducts({men,women,kids,topWear,bottomWear,winterWear,sortOrder}));
-  }, [men,women,kids,topWear,bottomWear,winterWear,sortOrder]);
+    dispatch(fetchProducts(searchText,{men,women,kids,topWear,bottomWear,winterWear,sortOrder}));
+  }, [men,women,kids,topWear,bottomWear,winterWear,sortOrder,searchText]);
 
 
 
