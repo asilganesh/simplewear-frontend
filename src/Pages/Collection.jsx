@@ -27,8 +27,8 @@ const Collection = () => {
 
   useEffect(() => {
     
-  
-    dispatch(fetchProducts(searchText,{men,women,kids,topWear,bottomWear,winterWear,sortOrder}));
+  const categories = {men,women,kids,topWear,bottomWear,winterWear}
+    dispatch(fetchProducts({categories, sortOrder, searchText}));
   }, [men,women,kids,topWear,bottomWear,winterWear,sortOrder,searchText]);
 
 

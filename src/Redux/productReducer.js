@@ -3,14 +3,13 @@ import smStates from "../utils/sm_states/index"
 import fetchProductsAsync from "../api/products"
 
 
-export const fetchProducts = createAsyncThunk('products/fetchProducts', async(search,categories=null,) => {
+export const fetchProducts = createAsyncThunk('products/fetchProducts', async({categories, sortOrder, searchText}) => {
     console.log(categories)
  
 
-
     const categoryFilters = [];
     const subCategoryFilters = [];
-    const {sortOrder} = categories
+   
 
     if(categories){
     const { men, women, kids, topWear, bottomWear, winterWear } = categories;
@@ -32,9 +31,9 @@ export const fetchProducts = createAsyncThunk('products/fetchProducts', async(se
                 $in: subCategoryFilters,
             },
             $or: [
-                { name: { $regex: search, $options: 'i' } },
-                { category: { $regex: search, $options: 'i' } },
-                { subCategory: { $regex: search, $options: 'i' } },
+                { name: { $regex: searchText, $options: 'i' } },
+                { category: { $regex: searchText, $options: 'i' } },
+                { subCategory: { $regex: searchText, $options: 'i' } },
               ]
         },
         sort:{

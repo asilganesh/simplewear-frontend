@@ -10,7 +10,7 @@ function App() {
     <>
     <BrowserRouter>
     <Routes>
-      <Route path='/auth' element={<AuthLayout/>}/>
+      <Route path='/auth/*' element={<AuthLayout/>}/>
       <Route path="/*" element={<MainLayout/>}/>
     </Routes>
     </BrowserRouter>

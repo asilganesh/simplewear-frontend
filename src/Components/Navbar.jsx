@@ -88,7 +88,7 @@ const Navbar = () => {
             </Link>
             
             <Link
-              to="/auth">
+              to="/auth/login">
             <HiOutlineUser className=" hover:text-gray-500" />
             </Link>
             
