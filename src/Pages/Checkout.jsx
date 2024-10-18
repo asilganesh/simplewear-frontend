@@ -277,7 +277,7 @@ const Checkout = () => {
               <div className="p-5 flex flex-col gap-2">
                 <p className="flex justify-between">
                   <span className="text-gray-500">Cart Total</span>{" "}
-                  <span className="text-black font-medium">&#x20B9;{cartTotal*10}</span>
+                  <span className="text-black font-medium">&#x20B9;{cartTotal}</span>
                 </p>
                 <p className="flex justify-between">
                   <span className="text-gray-500">Shipping Fee</span>{" "}
@@ -286,7 +286,7 @@ const Checkout = () => {
               </div>
               <div className=" p-4 flex flex-col gap-4">
                 <p className="flex justify-between text-base font-bold">
-                  <span>Total Amount</span> <span>&#x20B9;{cartTotal*10 + 40}</span>
+                  <span>Total Amount</span> <span>&#x20B9;{cartTotal + 40}</span>
                 </p>
                 <div className="text-xl text-gray-700">
                   Payment <span className="font-medium">Method</span>

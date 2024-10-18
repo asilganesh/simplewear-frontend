@@ -6,15 +6,11 @@ import { loginUser } from "../Redux/authReducer";
 import { json, useNavigate } from "react-router-dom";
 import useAuthManager from "../Composables/useAuthManager";
 
-
 const Login = () => {
-
- const {loginWithCredentials} = useAuthManager()
-const dispatch = useDispatch()
-const auth = useSelector(state => state.authReducer)
-const navigate = useNavigate()
-
-
+  const { loginWithCredentials } = useAuthManager();
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.authReducer);
+  const navigate = useNavigate();
 
   const [mail, setMail] = useState("");
   const [mailError, setMailError] = useState("");
@@ -22,12 +18,10 @@ const navigate = useNavigate()
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-
-
   const handleMailChange = (e) => {
     const value = e.target.value;
     setMail(value);
-    
+
     const mailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!value.match(mailRegex)) {
       setMailError("Please enter a valid email address");
@@ -40,7 +34,8 @@ const navigate = useNavigate()
     const value = e.target.value;
     setPassword(value);
 
-    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
     if (!value.match(passwordRegex)) {
       setPasswordError(
         "Password should include at least one special character, one capital letter, and one number"
@@ -50,71 +45,56 @@ const navigate = useNavigate()
     }
   };
 
- 
-
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if ( !mailError && !passwordError ) {
-    
+
+    if (!mailError && !passwordError) {
       const userInfo = {
         mail,
         password,
-      }
+      };
 
       loginWithCredentials(userInfo)
-  
-      .then((response) => {
-        debugger;
-        console.log(response)
-        const userInfo = response.payload.userDetails.userInfo
-        localStorage.setItem('userInfo',JSON.stringify(userInfo))
-
-        if(response.meta.requestStatus === 'fulfilled'){
-          toast.success("Login Successfully", {
-            position: "top-right",
-            autoClose: 1000,
-          });
+        .then((response) => {
          
-          setTimeout(() => {
-            navigate('/')
-          },1000)
-             
-        }
-        else{
-          toast.error(auth.error, {
+
+          if (response.meta.requestStatus === "fulfilled") {
+            toast.success("Login Successfully", {
+              position: "top-right",
+              autoClose: 1000,
+            });
+
+            setTimeout(() => {
+              navigate("/");
+            }, 1000);
+          }
+        })
+        .catch((error) => {
+          toast.error(error.message || "Login failed", {
             position: "top-right",
             autoClose: 2000,
           });
-        }       
-
-        clearForm()
-
-      })
-      .catch((error)=>{
-        console.log(error)
-      })
-
-
-
+        })
+        .finally(() => {
+          clearForm();
+        });
     } else {
-        toast.error("Please enter valid data", {
-            position: "top-right",
-            autoClose: 2000,
-          });
+      toast.error("Please enter valid data", {
+        position: "top-right",
+        autoClose: 2000,
+      });
     }
   };
 
   const clearForm = () => {
-    setMail('')
-    setPassword('')
-  }
+    setMail("");
+    setPassword("");
+  };
   return (
     <>
       <div>
-      <ToastContainer />
+        <ToastContainer />
         <form onSubmit={handleSubmit}>
-         
           <div>
             <input
               type="email"
@@ -123,7 +103,9 @@ const navigate = useNavigate()
               onChange={handleMailChange}
               className="border-black border"
             />
-            {mailError && <span className="text-sm text-red-400">{mailError}</span>}
+            {mailError && (
+              <span className="text-sm text-red-400">{mailError}</span>
+            )}
           </div>
 
           <div>
@@ -134,12 +116,15 @@ const navigate = useNavigate()
               onChange={handlePasswordChange}
               className="border-black border"
             />
-            {passwordError && <span className="text-sm text-red-400">{passwordError}</span>}
+            {passwordError && (
+              <span className="text-sm text-red-400">{passwordError}</span>
+            )}
           </div>
 
-        
-
-          <button type="submit" className="mt-4 bg-blue-500 text-white px-4 py-2">
+          <button
+            type="submit"
+            className="mt-4 bg-blue-500 text-white px-4 py-2"
+          >
             Submit
           </button>
         </form>

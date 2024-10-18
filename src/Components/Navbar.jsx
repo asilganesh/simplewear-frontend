@@ -7,6 +7,8 @@ import { IoBagOutline } from "react-icons/io5";
 import { CiMenuFries } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
 import { useSelector } from "react-redux";
+import useAuthManager from "../Composables/useAuthManager";
+import ProfileSectionComponent from "./profileSectionComponent";
 
 
 const Navbar = () => {
@@ -14,6 +16,7 @@ const Navbar = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const cart = useSelector((state) => state.cartReducer.cart);
   console.log(cart)
+  const{getEmail,getUserName}=useAuthManager()
   
 
   const isActive = (path) => location.pathname === path;
@@ -87,10 +90,8 @@ const Navbar = () => {
              <IoIosSearch className="hover:text-gray-500" />
             </Link>
             
-            <Link
-              to="/auth/login">
-            <HiOutlineUser className=" hover:text-gray-500" />
-            </Link>
+           
+            <ProfileSectionComponent/>
             
             <Link
               to="/cart">

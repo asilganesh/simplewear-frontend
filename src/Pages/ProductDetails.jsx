@@ -7,12 +7,15 @@ import { fetchProducts } from "../Redux/productReducer";
 import { useParams } from "react-router-dom";
 import ProductCard from "../Components/ProductCard";
 import { addToCart } from "../Redux/cartStore";
+import { fetchProductById } from "../Redux/productDetailsReducer";
 
 const ProductDetails = () => {
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.productReducer);
+  const {productData} = useSelector((state) => state.productDetailsReducer)
   const { id: productId } = useParams();
-
+console.log(productData)
+ 
   const cart = useSelector((state) => state.cartReducer.cart);
 
   const [selectedProduct, setSelectedProduct] = useState({});
@@ -20,26 +23,17 @@ const ProductDetails = () => {
   const [selectedImg, setSelectedImg] = useState("");
   const [size, setSize] = useState("");
 
-  useEffect(() => {
-    if (products.length > 0) {
-      let data = products.filter((product) => product._id === productId);
-      
-     console.log(data)
-      const existingProduct = cart.find(item => item._id === data._id && item.sizes === data.sizes);
-      console.log(existingProduct)
 
-    if(existingProduct){
-      
-    }
-      if (data.length > 0) {
-        setSelectedProduct(data[0]);
-        setSelectedImg(data[0].image[0]);
-      }
+ 
+
+  useEffect(() => {
+    setSelectedImg(productData.image[0])
+    if (products.length > 0) {
 
       const relePros = products.filter((product) => {
         return (
-          product.subCategory === data[0].subCategory &&
-          product.category === data[0].category
+          product.subCategory === productData.subCategory &&
+          product.category === productData.category
         );
       });
 
@@ -47,10 +41,12 @@ const ProductDetails = () => {
         setRelatedProducts(relePros);
       }
     }
-  }, [products, productId]);
+  }, [products,productData, productId]);
 
   useEffect(() => {
+    dispatch(fetchProductById(productId))
     dispatch(fetchProducts());
+
   }, []);
 
   const addProductToCart = (product) => {
@@ -78,8 +74,8 @@ const ProductDetails = () => {
           <div className="flex  flex-col justify-between gap-10 sm:flex-row">
             <div className="imges  flex sm:flex-row flex-col justify-between gap-4">
               <div className=" flex sm:flex-col sm:overflow-y-auto  overflow-x-auto flex-row gap-2  sm:order-1 order-2 w-full sm:w-w18">
-                {selectedProduct.image
-                  ? selectedProduct.image.map((val, ind) => (
+                {productData && productData.image && productData.image.length > 0 
+                  && productData.image.map((val, ind) => (
                       <img
                         src={val}
                         key={ind}
@@ -87,30 +83,32 @@ const ProductDetails = () => {
                         className="cursor-pointer sm:w-full w-w18"
                         onClick={() => setSelectedImg(val)}
                       />
+                     
                     ))
-                  : ""}
+                  }
               </div>
 
               <div className="w-full h-auto sm:order-2 order-1 ">
                 <img src={selectedImg} alt="" className="w-full h-auto" />
+               
               </div>
             </div>
             <div className="productDetais  sm:w-1/2 w-full">
               <h1 className="font-medium text-2xl mt-2">
-                {selectedProduct.name}
+                {productData?.name}
               </h1>
               <h1 className="mt-5 text-3xl font-medium">
-              &#x20B9;{selectedProduct.price*10}
+              &#x20B9;{productData.price}
               </h1>
               <p className="mt-5 text-gray-500 md:w-4/5">
-                {selectedProduct.description}
+                {productData.description}
               </p>
 
               <p className="my-4">Select Size</p>
 
               <div className="flex gap-2 my-4">
-                {selectedProduct.sizes
-                  ? selectedProduct.sizes.map((val, index) => (
+                {productData.sizes
+                  ? productData.sizes.map((val, index) => (
                       <button
                         key={index}
                         className={`border py-2 px-4 bg-gray-100 ${
@@ -128,7 +126,7 @@ const ProductDetails = () => {
                text-white 
               px-8 py-3 text-sm
                active:bg-gray-700 my-4"
-                onClick={() => addProductToCart(selectedProduct)}
+                onClick={() => addProductToCart(productData)}
               >
                 ADD TO CART
               </button>
@@ -181,7 +179,7 @@ const ProductDetails = () => {
           </div>
 
           <div className=" grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 xsm:grid-cols-2 gap-4">
-            {selectedProduct
+            {productData
               ? relatedProducts.length > 0
                 ? relatedProducts
                     .slice(0, 4)

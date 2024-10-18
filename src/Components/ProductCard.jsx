@@ -13,7 +13,7 @@ const ProductCard = ({productId,imgLink, title, price}) => {
               />
               </div>
               <div className='text-gray-500 text-sm pt-3 pb-1 font-medium'>{title}</div>
-              <div className='text-gray-500 text-sm font-medium'>&#x20B9;{price*10}</div>
+              <div className='text-gray-500 text-sm font-medium'>&#x20B9;{price}</div>
             </div>
    </Link>
   )

@@ -14,7 +14,7 @@ const OrdersListComponent = ({ item }) => {
         <div className="w-full flex flex-col gap-1 ">
           <p  className="font-medium">{item.name}</p>
           <p>
-          &#x20B9; {item.price *10} &nbsp; Quantity: {item.quantity} &nbsp; Size:
+          &#x20B9; {item.price } &nbsp; Quantity: {item.quantity} &nbsp; Size:
             {item.sizes}
           </p>
           <p className="text-gray-500"><span className="text-black"> Date: </span> {item.Date}</p>
