@@ -6,19 +6,19 @@ import "react-toastify/dist/ReactToastify.css";
 import { fetchProducts } from "../Redux/productReducer";
 import { useParams } from "react-router-dom";
 import ProductCard from "../Components/ProductCard";
-import { addToCart } from "../Redux/cartStore";
+import { addItemToCart } from "../Redux/cartStore";
 import { fetchProductById } from "../Redux/productDetailsReducer";
+import useAuthManager from "../Composables/useAuthManager";
 
 const ProductDetails = () => {
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.productReducer);
   const {productData} = useSelector((state) => state.productDetailsReducer)
   const { id: productId } = useParams();
-console.log(productData)
- 
+const {getUserId} = useAuthManager() 
   const cart = useSelector((state) => state.cartReducer.cart);
 
-  const [selectedProduct, setSelectedProduct] = useState({});
+  // const [selectedProduct, setSelectedProduct] = useState({});
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [selectedImg, setSelectedImg] = useState("");
   const [size, setSize] = useState("");
@@ -27,14 +27,17 @@ console.log(productData)
  
 
   useEffect(() => {
+   if(productData.image){
     setSelectedImg(productData.image[0])
+   }
     if (products.length > 0) {
 
       const relePros = products.filter((product) => {
         return (
           product.subCategory === productData.subCategory &&
-          product.category === productData.category
-        );
+          product.category === productData.category &&
+          product._id !== productData._id
+         );
       });
 
       if (relePros.length >= 0) {
@@ -50,21 +53,48 @@ console.log(productData)
   }, []);
 
   const addProductToCart = (product) => {
+
     if (!size.length) {
       toast.error("Please select the size", {
         position: "top-right",
-        autoClose: 2000,
+        autoClose: 1000,
+      });
+
+      return;
+    }
+    if (!getUserId()) {
+      toast.error("Please Loign to add items to cart", {
+        position: "top-right",
+        autoClose: 1000,
       });
 
       return;
     }
 
-    product = { ...product, sizes: size, quantity: 1 };
-    dispatch(addToCart(product));
-    toast.success( 'Item added to Cart', {
-      position: "top-right",
-      autoClose: 2000,
-    });
+    const item = {
+      "userId" : getUserId(),
+      "productId": product._id,
+      "productName": product.name,
+      "productSize":size,
+      "productQuantity":1 ,
+      "productPrice":product.price ,
+      "totalPrice": product.price,
+      "productImage":product.image
+  
+  }
+
+
+    dispatch(addItemToCart(item))
+    .then((response) => {
+      toast.success( 'Item added to Cart', {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+   
   };
 
   return (

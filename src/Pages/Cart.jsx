@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart } from "../Redux/cartStore";
 import CartComponent from "../Components/CartComponent";
@@ -8,10 +8,12 @@ const Cart = () => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cartReducer.cart);
  
+  useEffect(()=>{
 
+  },[cart])
 
 const cartTotal = cart.reduce((acc,val) =>{
-  return acc+(val.price*val.quantity)
+  return acc+(val.productPrice*val.productQuantity)
 
 },0)
 
