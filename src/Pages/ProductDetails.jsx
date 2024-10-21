@@ -13,9 +13,9 @@ import useAuthManager from "../Composables/useAuthManager";
 const ProductDetails = () => {
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.productReducer);
-  const {productData} = useSelector((state) => state.productDetailsReducer)
+  const { productData } = useSelector((state) => state.productDetailsReducer);
   const { id: productId } = useParams();
-const {getUserId} = useAuthManager() 
+  const { getUserId } = useAuthManager();
   const cart = useSelector((state) => state.cartReducer.cart);
 
   // const [selectedProduct, setSelectedProduct] = useState({});
@@ -23,37 +23,31 @@ const {getUserId} = useAuthManager()
   const [selectedImg, setSelectedImg] = useState("");
   const [size, setSize] = useState("");
 
-
- 
-
   useEffect(() => {
-   if(productData.image){
-    setSelectedImg(productData.image[0])
-   }
+    if (productData.image) {
+      setSelectedImg(productData.image[0]);
+    }
     if (products.length > 0) {
-
       const relePros = products.filter((product) => {
         return (
           product.subCategory === productData.subCategory &&
           product.category === productData.category &&
           product._id !== productData._id
-         );
+        );
       });
 
       if (relePros.length >= 0) {
         setRelatedProducts(relePros);
       }
     }
-  }, [products,productData, productId]);
+  }, [products, productData, productId]);
 
   useEffect(() => {
-    dispatch(fetchProductById(productId))
+    dispatch(fetchProductById(productId));
     dispatch(fetchProducts());
-
   }, []);
 
   const addProductToCart = (product) => {
-
     if (!size.length) {
       toast.error("Please select the size", {
         position: "top-right",
@@ -72,29 +66,35 @@ const {getUserId} = useAuthManager()
     }
 
     const item = {
-      "userId" : getUserId(),
-      "productId": product._id,
-      "productName": product.name,
-      "productSize":size,
-      "productQuantity":1 ,
-      "productPrice":product.price ,
-      "totalPrice": product.price,
-      "productImage":product.image
-  
-  }
-
+      userId: getUserId(),
+      productId: product._id,
+      productName: product.name,
+      productSize: size,
+      productQuantity: 1,
+      productPrice: product.price,
+      totalPrice: product.price,
+      productImage: product.image,
+    };
 
     dispatch(addItemToCart(item))
-    .then((response) => {
-      toast.success( 'Item added to Cart', {
-        position: "top-right",
-        autoClose: 2000,
+      .then((response) => {
+        if (response.error) {
+          toast.error("Error ocurrect", {
+            position: "top-right",
+            autoClose: 500,
+          });
+          throw new Error(response.error);
+        }
+        if(response.payload){
+          toast.success("Item added to Cart", {
+            position: "top-right",
+            autoClose: 500,
+          });
+        }
+      })
+      .catch((err) => {
+        console.error(err);
       });
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-   
   };
 
   return (
@@ -104,31 +104,28 @@ const {getUserId} = useAuthManager()
           <div className="flex  flex-col justify-between gap-10 sm:flex-row">
             <div className="imges  flex sm:flex-row flex-col justify-between gap-4">
               <div className=" flex sm:flex-col sm:overflow-y-auto  overflow-x-auto flex-row gap-2  sm:order-1 order-2 w-full sm:w-w18">
-                {productData && productData.image && productData.image.length > 0 
-                  && productData.image.map((val, ind) => (
-                      <img
-                        src={val}
-                        key={ind}
-                        alt=""
-                        className="cursor-pointer sm:w-full w-w18"
-                        onClick={() => setSelectedImg(val)}
-                      />
-                     
-                    ))
-                  }
+                {productData &&
+                  productData.image &&
+                  productData.image.length > 0 &&
+                  productData.image.map((val, ind) => (
+                    <img
+                      src={val}
+                      key={ind}
+                      alt=""
+                      className="cursor-pointer sm:w-full w-w18"
+                      onClick={() => setSelectedImg(val)}
+                    />
+                  ))}
               </div>
 
               <div className="w-full h-auto sm:order-2 order-1 ">
                 <img src={selectedImg} alt="" className="w-full h-auto" />
-               
               </div>
             </div>
             <div className="productDetais  sm:w-1/2 w-full">
-              <h1 className="font-medium text-2xl mt-2">
-                {productData?.name}
-              </h1>
+              <h1 className="font-medium text-2xl mt-2">{productData?.name}</h1>
               <h1 className="mt-5 text-3xl font-medium">
-              &#x20B9;{productData.price}
+                &#x20B9;{productData.price}
               </h1>
               <p className="mt-5 text-gray-500 md:w-4/5">
                 {productData.description}

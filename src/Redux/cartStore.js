@@ -1,6 +1,6 @@
 import { createAsyncThunk, createReducer } from "@reduxjs/toolkit";
 import smStates from "../utils/sm_states/index";
-import { addItemToCartAsync, deleteItemFromCartAsync, fetcthCartDetailsAsync } from "../api/cart";
+import { addItemToCartAsync, clearCartAsync, deleteItemFromCartAsync, fetcthCartDetailsAsync, updateCartItemQuantityAsync, updateCartItemSizeAsync } from "../api/cart";
 
 export const fetchCartDetails = createAsyncThunk('getCartDetails', async (userId) => {
 
@@ -16,34 +16,31 @@ export const addItemToCart = createAsyncThunk("addToCart", async (product) => {
 });
 
 
-export const updateItemSize = createAsyncThunk('updateSize', async ({ product, size }) => {
-  const data = { product, size }
+export const updateItemSize = createAsyncThunk('updateSize', async (cartItem) => {
+  const data = await updateCartItemSizeAsync(cartItem)
 
   return data
 })
 
-export const updateItemQuantity = createAsyncThunk('updateQuantity', async ({ product, quantity }) => {
-  const data = { product, quantity }
+export const updateItemQuantity = createAsyncThunk('updateQuantity', async (cartData) => {
+  const data = await updateCartItemQuantityAsync(cartData)
 
   return data
 })
 
 
+export const removeProductFromCart = createAsyncThunk('removeItemFromCart', async (userAndCarId) => {
 
-
-
-
-export const removeProductFromCart = createAsyncThunk('removeItemFromCart', async(userAndCarId) => {
-  
-  const {itemId,userId} = userAndCarId
-  const data = await deleteItemFromCartAsync(itemId,userId)
+  const { itemId, userId } = userAndCarId
+  const data = await deleteItemFromCartAsync(itemId, userId)
   return data
 });
 
 
 
-export const clearCart = createAsyncThunk("clearCart", async () => {
-  return [];
+export const clearCart = createAsyncThunk("clearCart", async (userId) => {
+  const data = await clearCartAsync(userId)
+  return data;
 });
 
 const initialState = {
@@ -83,8 +80,8 @@ export const cartReducer = createReducer(initialState, (builder) => {
 
     .addCase(addItemToCart.fulfilled, (state, action) => {
       state.loading = false;
-      state.status =smStates.IS_SUCCESSFUL
-      state.cart =action.payload.data.data
+      state.status = smStates.IS_SUCCESSFUL
+      state.cart = action.payload.data.data
 
       if (!action.payload) {
         state.status = smStates.IS_SUCCESS_BUT_NO_DATA;
@@ -104,7 +101,8 @@ export const cartReducer = createReducer(initialState, (builder) => {
 
     .addCase(clearCart.fulfilled, (state, action) => {
       state.loading = false;
-      state.cart = action.payload;
+      state.cart = action.payload.data;
+      state.status= smStates.IS_SUCCESSFUL
     })
 
     .addCase(clearCart.rejected, (state, action) => {
@@ -121,8 +119,8 @@ export const cartReducer = createReducer(initialState, (builder) => {
     .addCase(removeProductFromCart.fulfilled, (state, action) => {
       state.loading = false;
       state.status = smStates.IS_SUCCESSFUL
-      
-      state.cart =action.payload.data.data
+
+      state.cart = action.payload.data.data
       if (!action.payload) {
         state.status = smStates.IS_SUCCESS_BUT_NO_DATA;
       }
@@ -141,43 +139,11 @@ export const cartReducer = createReducer(initialState, (builder) => {
 
     .addCase(updateItemSize.fulfilled, (state, action) => {
       state.loading = false;
+      state.cart = action.payload.data.data
+      state.status = smStates.IS_SUCCESSFUL
 
-      const existingProduct = state.cart.find(
-        (item) =>
-          item._id === action.payload.product._id &&
-          item.sizes === action.payload.product.sizes
-      );
-
-      if (existingProduct) {
-        const productExistWithNewSize = state.cart.find(
-          (item) =>
-            item.id === action.payload.product._id &&
-            item.sizes === action.payload.size
-        )
-
-        if (productExistWithNewSize) {
-          state.cart = state.cart.map(val => {
-            if (val.id === action.payload.product._id &&
-              val.sizes === action.payload.size) {
-              return { ...val, quantity: val.quantity + action.payload.product.quantity }
-            }
-            else {
-              return val
-            }
-          })
-        }
-
-        state.cart = state.cart.map(item => {
-          if (item._id === action.payload.product._id &&
-            item.sizes === action.payload.product.sizes) {
-
-
-            return { ...item, sizes: action.payload.size }
-          }
-          else {
-            return item
-          }
-        })
+      if (!action.payload) {
+        state.status = smStates.IS_SUCCESS_BUT_NO_DATA
       }
 
     })
@@ -196,20 +162,14 @@ export const cartReducer = createReducer(initialState, (builder) => {
 
     .addCase(updateItemQuantity.fulfilled, (state, action) => {
       state.loading = false;
+      state.cart = action.payload.data.data,
+        state.status = smStates.IS_SUCCESSFUL
 
-
-
-
-      state.cart = state.cart.map((item) =>
-        item._id === action.payload.product._id &&
-          item.sizes === action.payload.product.sizes
-          ? { ...item, quantity: action.payload.quantity }
-          : item
-      );
-
+      if (!action.payload) {
+        state.status = smStates.IS_SUCCESS_BUT_NO_DATA
+      }
 
     })
-
 
     .addCase(updateItemQuantity.rejected, (state, action) => {
       state.loading = false;

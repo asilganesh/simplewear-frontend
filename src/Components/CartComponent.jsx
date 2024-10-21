@@ -17,17 +17,17 @@ const CartComponent = ({product}) => {
         
     }
 
-    // const updateSize = (size ) => {
-    //     console.log(product)
+    const updateSize = (size ) => {
+        const item = {...product, productSize:size}
       
-    //     dispatch(updateItemSize({product,size}))
-    // }
+        dispatch(updateItemSize(item))
+    }
 
-    // const updateQuantity = (quantity ) => {
-       
-    //     quantity = Number(quantity)
-    //     dispatch(updateItemQuantity({product,quantity}))
-    // }
+    const updateQuantity = (quantity ) => {
+       const cartId = product._id
+       const newQuantity = Number(quantity)
+        dispatch(updateItemQuantity({cartId,userId ,newQuantity}))
+    }
 
  
   return (

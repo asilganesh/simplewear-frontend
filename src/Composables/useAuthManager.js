@@ -50,6 +50,7 @@ export default function useAuthManager() {
   const getUserId = () => lodash.get(auth, "user.userData.id", null);
   const getUserName = () => lodash.get(auth, "user.userData.name", null);
   const getUserType = () => lodash.get(auth, "user.userData.type", null);
+  const getUserToken = () => lodash.get(auth, "user.token", null);
 
   return {
     loginWithCredentials,
@@ -58,5 +59,6 @@ export default function useAuthManager() {
     getUserId,
     getUserName,
     getUserType,
+    getUserToken,
   };
 }
