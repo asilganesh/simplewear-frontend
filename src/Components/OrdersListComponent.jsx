@@ -7,8 +7,6 @@ const OrdersListComponent = ( {order} ) => {
 
   const deliveryDate = new Date(order.deliveryDate)
  
-console.log(deliveryDate)
-  console.log(order)
   return (
     <div className="home max-w-[1200px] w-[80vw] mx-auto"> 
   
@@ -44,7 +42,7 @@ console.log(deliveryDate)
 {
    viewItem && order.products.map((val,ind) => <>
    
-   <div className={`flex  p-2 gap-5 border-2 my-3  w-full lg:w-1/2`} >
+   <div className={`flex  p-2 gap-5 border-2 my-3  w-full lg:w-1/2`} key={ind} >
   
 
   <div className=' h-44 sm:w-36  xsm:30 '>

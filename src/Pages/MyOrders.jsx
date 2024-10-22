@@ -8,7 +8,6 @@ const MyOrders = () => {
   const dispatch = useDispatch()
   const {getUserId} = useAuthManager()
   const userId =  getUserId()
-console.log(userId)
     const {orders} = useSelector(state=>state.myOrdersReducer)
 
     useEffect(() => {
@@ -17,7 +16,6 @@ console.log(userId)
 
     },[dispatch,userId])
 
-    console.log(orders)
 
   return (
     <div className="home max-w-[1200px] w-[80vw] mx-auto">

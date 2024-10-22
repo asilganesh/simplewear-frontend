@@ -6,7 +6,6 @@ import useAuthManager from "../Composables/useAuthManager";
 const ProfileSectionComponent = () => {
   const [openProfile, setOpenProfile] = useState(false);
   const { getUserName,logout } = useAuthManager();
-  console.log(getUserName())
   return (
     <div
       className={`relative  p-4 ${openProfile?" border-b-4 border-black ":""}`}
