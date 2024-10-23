@@ -24,7 +24,7 @@ const cartTotal = cart.reduce((acc,val) =>{
 
   return (
    
-    <div className="home max-w-[1200px] w-[80vw] mx-auto ">
+    <div className="home max-w-[1200px] w-[80vw]  mx-auto ">
       {/* <button onClick={()=>emptyCart()}> Clear Cart</button> */}
       <div className="grid lg:grid-cols-3 my-5 gap-5 ">
         <div className="yourCart md:col-span-2 " >

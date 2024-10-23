@@ -3,15 +3,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearCart } from "../Redux/cartStore";
 import PriceComponent from "../Components/PriceComponent";
 import razorPayLogo from "../assets/razorpayLogo.png";
-import { useNavigate } from "react-router-dom";
+import { unstable_HistoryRouter, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { addToMyOrders } from "../Redux/myOrdersStore";
+import useAuthManager from "../Composables/useAuthManager";
+import axios from "axios";
+import { RAZORPAY_KEY_ID, SERVER_API } from "../Helper/serverUrl";
 
 const Checkout = () => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cartReducer.cart);
   const navigate = useNavigate();
+  const { getUserId, getUserName, getEmail } = useAuthManager();
+  const userId = getUserId();
+  //  const history = unstable_HistoryRouter()
 
   const [paymenttype, setPaymentType] = useState("COD");
   const [formData, setFormData] = useState({
@@ -27,12 +33,8 @@ const Checkout = () => {
   });
 
   const cartTotal = cart.reduce((acc, val) => {
-    return acc + val.price * val.quantity;
+    return acc + val.totalPrice * val.productQuantity;
   }, 0);
-
-  const emptyCart = () => {
-    dispatch(clearCart());
-  };
 
   const procedPayment = async () => {
     if (
@@ -48,106 +50,100 @@ const Checkout = () => {
     ) {
       toast.warning("Enter Delivery Details", {
         position: "top-right",
-        autoClose: 2000,
+        autoClose: 500,
       });
 
       return;
     }
 
-    const myOrders = cart.map((val) => {
-      const date = new Date();
-      const formattedDate = ` ${date.toDateString()}`;
-      return {
-        ...val,
-        orderStatus: "Order Placed",
-        Payment: paymenttype,
-        Date: formattedDate,
-      };
-    });
+    const myOrdersData = {
+      userId,
+      deliveryDetails: formData,
+      totalAmount: Number(cartTotal) + 40,
+      paymentMethod: paymenttype,
+    };
 
     if (paymenttype === "COD") {
-      dispatch(addToMyOrders(myOrders));
+      dispatch(addToMyOrders(myOrdersData))
+        .then((response) => {
+          if (response.payload) {
+            toast.success("Order Placed Sucessfully", {
+              position: "top-right",
+              autoClose: 500,
+            });
+            dispatch(clearCart(userId));
 
-      dispatch(clearCart());
-
-      navigate("/myOrders");
+            setTimeout(() => {
+              navigate("/myOrders");
+            }, 1000);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
 
     if (paymenttype === "RAZORPAY") {
-      const loadScript = (src) => {
-        return new Promise((resolve) => {
-          const script = document.createElement("script");
-          script.src = src;
-
-          script.onload = () => {
-            resolve(true);
-          };
-
-          script.onerror = () => {
-            resolve(false);
-          };
-
-          document.body.appendChild(script);
-        });
-      };
-
-      const displayRazorpay = async (amount) => {
-        const res = await loadScript(
-          "https://checkout.razorpay.com/v1/checkout.js"
-        );
-
-        if (!res) {
-          
-          toast.error("Youre are Offline, Failed to Load", {
-            position: "top-right",
-            autoClose: 2000,
-          });
-          return;
-        }
-
-        const options = {
-          key: "rzp_test_pfT68y3HSv5bW8",
+      try {
+        // Create order in backend
+        const {
+          data: { order },
+        } = await axios.post(`${SERVER_API}/createOrder`, {
+          userId, // Ideally, fetch from context or state
+          amount: cartTotal + 40, // Amount in INR
           currency: "INR",
-          amount: amount * 100,
+        });
+ 
+       
+        const options = {
+          key: RAZORPAY_KEY_ID,
+          amount: order.amount,
+          currency: order.currency,
           name: "Simple Wear",
-          description: "thanks for purchasing",
-          payment_capture: "1", // Auto-capture payment
-          handler: function (response) {
-          
-            toast.success( `Payment Successful with paymentId: ${response.razorpay_payment_id}`, {
-              position: "top-right",
-              autoClose: 2000,
+          description: "Test Transaction",
+          order_id: order.id,
+          handler: async function (response) {
+            const paymentData = {
+              orderId: response.razorpay_order_id,
+              paymentId: response.razorpay_payment_id,
+              userId,
+            };
+            await axios.post(`${SERVER_API}/storePaymentDetails`, paymentData);
+
+            dispatch(addToMyOrders({...myOrdersData,paymentStatus:'Completed'}))
+            .then((response) => {
+              if (response.payload) {
+
+                dispatch(clearCart(userId));
+    
+                setTimeout(() => {
+                  navigate("/myOrders");
+                }, 1000);
+              }
+            })
+            .catch((err) => {
+              console.log(err);
             });
-            dispatch(addToMyOrders(myOrders));
-
-            dispatch(clearCart());
-
-            navigate("/myOrders");
+            
           },
-          
-          method: {
-            upi: true, // Enabling UPI as a payment option
+          prefill: {
+            name: getUserName(),
+            email: getEmail(),
+          },
+          theme: {
+            color: "#3399cc",
           },
         };
 
-        const paymentObject = new window.Razorpay(options);
-
-        paymentObject.on("payment.failed", function (response) {
-         
-          toast.error( `Payment Failed: ${response.error.description}`, {
-            position: "top-right",
-            autoClose: 2000,
-          });
-        });
-
-        paymentObject.open();
-
-      
-      };
-
-      displayRazorpay(cartTotal+10);
+        const razorpay = new window.Razorpay(options);
+        razorpay.open();
+        
+      } catch (error) {
+        console.error("Error in payment process", error);
+      }
     }
   };
+
   return (
     <>
       <div className="home max-w-[1200px] w-[80vw] mx-auto ">
@@ -277,7 +273,9 @@ const Checkout = () => {
               <div className="p-5 flex flex-col gap-2">
                 <p className="flex justify-between">
                   <span className="text-gray-500">Cart Total</span>{" "}
-                  <span className="text-black font-medium">&#x20B9;{cartTotal}</span>
+                  <span className="text-black font-medium">
+                    &#x20B9;{cartTotal}
+                  </span>
                 </p>
                 <p className="flex justify-between">
                   <span className="text-gray-500">Shipping Fee</span>{" "}
@@ -286,7 +284,8 @@ const Checkout = () => {
               </div>
               <div className=" p-4 flex flex-col gap-4">
                 <p className="flex justify-between text-base font-bold">
-                  <span>Total Amount</span> <span>&#x20B9;{cartTotal + 40}</span>
+                  <span>Total Amount</span>{" "}
+                  <span>&#x20B9;{cartTotal + 40}</span>
                 </p>
                 <div className="text-xl text-gray-700">
                   Payment <span className="font-medium">Method</span>

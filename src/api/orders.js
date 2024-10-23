@@ -44,3 +44,36 @@ export const fetchOrdersAsync = async (userId) => {
             })
     })
 }
+
+export const addOrdersAsync = async(orderData) => {
+    const headers = {
+        Authorization: `Bearer ${injectheader()}`,
+        'Content-Type': 'application/json'
+    }
+
+    return new Promise((resolve,reject) => {
+        axios({
+            method: 'post',
+            data: orderData,
+            url: `${SERVER_API}/addOrders`
+        })
+        .then((response) => {
+            if(response.status !== 201){
+                throw new Error("Failed to add orders")
+            }
+
+            var responseBody = {
+                data: lodash.get(response,'data',{})
+            }
+
+            return resolve(responseBody)
+        })
+        .catch(err => {
+            if (err.response) {
+                return reject(err.response.data.message)
+            }
+            reject(err)
+        })
+    })
+    
+}

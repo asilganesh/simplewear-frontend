@@ -40,6 +40,7 @@ export const removeProductFromCart = createAsyncThunk('removeItemFromCart', asyn
 
 export const clearCart = createAsyncThunk("clearCart", async (userId) => {
   const data = await clearCartAsync(userId)
+
   return data;
 });
 
@@ -101,7 +102,7 @@ export const cartReducer = createReducer(initialState, (builder) => {
 
     .addCase(clearCart.fulfilled, (state, action) => {
       state.loading = false;
-      state.cart = action.payload.data;
+      state.cart = action.payload.data.data;
       state.status= smStates.IS_SUCCESSFUL
     })
 
