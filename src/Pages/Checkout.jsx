@@ -27,7 +27,7 @@ const Checkout = () => {
     street: "",
     city: "",
     state: "",
-    zip: "",
+    zipcode: "",
     country: "",
     phone: "",
   });
@@ -37,13 +37,14 @@ const Checkout = () => {
   }, 0);
 
   const procedPayment = async () => {
+   
     if (
       !formData.fname ||
       !formData.lname ||
       !formData.email ||
       !formData.state ||
       !formData.street ||
-      !formData.zip ||
+      !formData.zipcode ||
       !formData.phone ||
       !formData.country ||
       !formData.city
@@ -232,9 +233,9 @@ const Checkout = () => {
                 class="border border-gray-300 rounded py-1.5 px-3.5 w-full"
                 type="number"
                 placeholder="Zipcode"
-                value={formData.zip}
+                value={formData.zipcode}
                 onChange={(e) =>
-                  setFormData({ ...formData, zip: e.target.value })
+                  setFormData({ ...formData, zipcode: e.target.value })
                 }
               ></input>
               <input

@@ -84,6 +84,12 @@ const Navbar = () => {
             >
               My Orders
             </Link>
+            <Link
+              to="/adminPanel"
+              className="border rounded-lg border-gray-300 px-2 py-1 text-gray-500 font-sans font-normal hover:bg-gray-200 "
+            >
+              Admin
+            </Link>
           </div>
 
           <div className="icons flex sm:gap-x-7 justify-center items-center text-2xl xsm:gap-x-3">
@@ -166,6 +172,14 @@ const Navbar = () => {
             onClick={toggleDrawer}
           >
             My Orders
+          </Link>
+
+          <Link
+            to="/adminPanel"
+            className={`mb-4 p-2 border-b-2 text-center `}
+            onClick={toggleDrawer}
+          >
+            Admin Panel
           </Link>
         </div>
       </div>
