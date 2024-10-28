@@ -112,7 +112,7 @@ export const addOrdersAsync = async(orderData) => {
     
 }
 
-export const updateOrdersAssync =async(data) => {
+export const updateOrdersAsync =async(data) => {
     const headers = {
         Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MWExM2ZmMWRlYTQ3MWI1Zjk3OWY4MyIsIm5hbWUiOiJhZG1pbiIsIm1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJ0eXBlIjoiYWRtaW4iLCJpYXQiOjE3Mjk3NjU1NDF9.08TdVZ0r0FHTN7dNULgV12NIB4bH6xOep5B-91qavO8",
         'Content-Type': 'application/json'
@@ -123,6 +123,7 @@ export const updateOrdersAssync =async(data) => {
             method: 'put',
             url: `${SERVER_API}/updateOrder`,
             headers:headers,
+            data
         })
         .then(response=>{
             if(response.status!== 200) {
