@@ -1,6 +1,6 @@
 import { createAsyncThunk, createReducer } from "@reduxjs/toolkit";
 import smStates from "../utils/sm_states/index";
-import fetchProductsAsync from "../api/products";
+import fetchProductsAsync, { addProductAsync } from "../api/products";
 
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
@@ -51,6 +51,12 @@ export const fetchProducts = createAsyncThunk(
   }
 );
 
+export const addProduct = createAsyncThunk('addNewProduct', async(product) => {
+
+  const data = await addProductAsync(product)
+  return data
+})
+
 const initialState = {
   products: [],
   loading: false,
@@ -64,6 +70,7 @@ export const productReducer = createReducer(initialState, (builder) => {
       state.loading = true;
       state.status = smStates.IS_TRIGGERED;
     })
+
     .addCase(fetchProducts.fulfilled, (state, action) => {
       state.loading = false;
       state.products = action.payload.products;
@@ -72,9 +79,31 @@ export const productReducer = createReducer(initialState, (builder) => {
         state.status = smStates.IS_SUCCESS_BUT_NO_DATA;
       }
     })
+
     .addCase(fetchProducts.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
       state.status = smStates.IS_FAILED;
-    });
+    })
+
+    .addCase(addProduct.pending, (state) => {
+      state.loading = true;
+      state.status = smStates.IS_TRIGGERED;
+    })
+
+    .addCase(addProduct.fulfilled, (state,action) => {
+      state.loading = false;
+      state.status = smStates.IS_SUCCESSFUL;
+      if (!action.payload) {
+        state.status = smStates.IS_SUCCESS_BUT_NO_DATA;
+      }
+    })
+
+    .addCase(addProduct.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+      state.status = smStates.IS_FAILED;
+    })
+
+
 });
