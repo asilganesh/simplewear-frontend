@@ -3,7 +3,6 @@ import { GoPackage } from "react-icons/go";
 
 
 const OrdersListComponent = ({item, updateOrderStatus}) => {
-
     const date = new Date(item.orderDate)
 
    const updateStatus = (value) => {
