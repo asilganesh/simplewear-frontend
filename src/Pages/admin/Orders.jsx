@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import OrdersListComponent from "../../Components/admin/OrdersListComponent";
-import { getAllOrders } from "../../Redux/myOrdersStore";
+import { getAllOrders, updateOrderStatus } from "../../Redux/myOrdersStore";
 
 const Orders = () => {
   const dispatch = useDispatch();
@@ -14,12 +14,18 @@ const Orders = () => {
     );
   }, []);
 
-  const updateOrderStatus =(itemId,status) => {
-console.log(itemId, status)
-dispatch(updateOrderStatus({itemId, status}))
-  }
+  const updateStatus = (itemId, status) => {
+    console.log(itemId, status);
+    dispatch(updateOrderStatus({ itemId, status }))
+    .then(response=> {
+      if(!response.payload){
+        throw new Error(response.error)
+      }
+      setOrders(response.payload.data)
+    })
+    .catch(err=>console.log(err))
+  };
 
-  console.log(orders);
   return (
     <>
       <div className="px-20 pt-10 flex flex-col gap-3 ">
@@ -28,7 +34,11 @@ dispatch(updateOrderStatus({itemId, status}))
           {orders &&
             orders.map((val, ind) => (
               <>
-                <OrdersListComponent item={val} key={ind} updateOrderStatus = {updateOrderStatus} />
+                <OrdersListComponent
+                  item={val}
+                  key={ind}
+                  updateOrderStatus={updateStatus}
+                />
               </>
             ))}
         </div>
