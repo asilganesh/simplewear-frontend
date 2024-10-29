@@ -4,11 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../Redux/productReducer";
 import { IoMdClose } from "react-icons/io";
 import { CiSearch } from "react-icons/ci";
+import Loader from "../Components/Loader";
 
 
 const Collection = () => {
   const [productsArr, setProductsArr] = useState([]);
-  const { products } = useSelector((state) => state.productReducer);
+  const { products, loading } = useSelector((state) => state.productReducer);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [searchText, setSearchText] = useState(""); 
@@ -201,7 +202,12 @@ const Collection = () => {
               </p>
             </div>
 
-            <div className="collectionsContainer grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-3 xsm:grid-cols-2 gap-4">
+            {
+              loading 
+              ?
+              <Loader/>
+              :
+              <div className="collectionsContainer grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-3 xsm:grid-cols-2 gap-4">
               {products.length > 0
                 ? products.map((item, index) => (
                     <ProductCard
@@ -214,6 +220,8 @@ const Collection = () => {
                   ))
                 : products.length<=0 ?"No Producs found, Please try with New Search": "Loading..." }
             </div>
+
+            }
           </section>
         </div>
       </div>

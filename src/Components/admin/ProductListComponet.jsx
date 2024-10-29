@@ -2,9 +2,16 @@ import React from "react";
 import { IoMdClose } from "react-icons/io";
 
 
-const ProductListComponet = ({product}) => {
+
+
+const ProductListComponet = ({product,removeProduct}) => {
+
+
+
+
   return (
     <>
+   
       <div className="grid grid-cols-6  p-1 text-gray-600 tex-sm border-y">
 
     <div className="col-span-1">
@@ -21,7 +28,9 @@ const ProductListComponet = ({product}) => {
     <div className="col-span-1 flex items-center">
         {product.price}
     </div>
-    <div className="col-span-1 text-center flex items-center justify-start ">
+    <div className="col-span-1 text-center flex items-center justify-start "
+    onClick={() => removeProduct(product._id)}
+    >
     <IoMdClose/>
     </div>
       </div>

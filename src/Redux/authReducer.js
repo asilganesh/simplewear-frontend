@@ -1,6 +1,6 @@
 import { createAsyncThunk, createReducer } from "@reduxjs/toolkit";
 import smStates from "../utils/sm_states";
-import { userLoginAsync, userRegistrationAsync } from "../api/auth";
+import { adminLoginAsync, userLoginAsync, userRegistrationAsync } from "../api/auth";
 
 export const registerUser = createAsyncThunk('registerUser',async(userData) => {
 
@@ -19,6 +19,12 @@ export const loginUser = createAsyncThunk('loginUser',async(userData) => {
 export const logoutUser = createAsyncThunk('logoutUser',() => {
     return
 } )
+
+export const adminLogin  = createAsyncThunk('auth/adminLogin', async(adminDetails) => {
+
+    const data = await adminLoginAsync(adminDetails)
+    return data
+})
 
 const initialState = {
     user: null,
@@ -75,9 +81,29 @@ export const authReducer = createReducer(initialState,(builder) => {
 
     .addCase('loginSuccess', (state, action) => {
         state.user = action.payload; 
-      })
+    })
 
-      .addCase(logoutUser.fulfilled, (state) => {
+     .addCase(logoutUser.fulfilled, (state) => {
         state.user = null; 
-      });
+    })
+
+    .addCase(adminLogin.pending, (state) => {
+        state.loading = true,
+        state.status = smStates.IS_TRIGGERED
+    })
+
+    .addCase(adminLogin.fulfilled, (state,action) => {
+        state.loading= false,
+        state.status = smStates.IS_SUCCESSFUL
+
+    })
+
+    .addCase(adminLogin.rejected, (state) => {
+        state.loading = false,
+        state.status = smStates.IS_FAILED
+    })
+
+      
+
+
 })

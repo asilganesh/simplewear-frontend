@@ -2,6 +2,12 @@ import axios from "axios"
 import lodash from "lodash"
 import { SERVER_API } from "../Helper/serverUrl"
 
+export const getAdminToken = () => {
+   const token=  JSON.parse(localStorage.getItem('adminInfo'))
+   console.log(token)
+   return token.token
+}
+
 export const fetchProductByIdAsync = (productId) => {
     let productData = new Promise((resolve,reject) => {
 
@@ -65,17 +71,17 @@ export default fetchProductsAsync
 
 
 export const addProductAsync =  (product) => {
-
+   
     const headers = {
-        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MWExM2ZmMWRlYTQ3MWI1Zjk3OWY4MyIsIm5hbWUiOiJhZG1pbiIsIm1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJ0eXBlIjoiYWRtaW4iLCJpYXQiOjE3Mjk3NjU1NDF9.08TdVZ0r0FHTN7dNULgV12NIB4bH6xOep5B-91qavO8",
+        Authorization: `Bearer ${getAdminToken()}`,
         'Content-Type': 'application/json'
     }
-
+    
     return new Promise((resolve,reject) => {
         axios({
             method:"post",
             url:`${SERVER_API}/addProduct`,
-            header:headers,
+            headers:headers,
             data:product
         })
         .then(response => {
@@ -91,7 +97,40 @@ export const addProductAsync =  (product) => {
             return resolve(responsebody)
         })
         .catch(err=>{
-            console.log(err)
+            return reject(err)
+        })
+    })
+
+}
+
+export const deleteProductAync = (productId) => {
+
+    const headers = {
+        Authorization: `Bearer ${getAdminToken()}`,
+        'Content-Type': 'application/json'
+    }
+
+    return new Promise((resolve, reject) => {
+
+        axios({
+            method: "delete",
+            url : `${SERVER_API}/deleteProduct`,
+            headers,
+            data:{productId: productId}
+        })
+        .then(response => {
+            if(response.status !== 200) {
+                throw new Error("Failed to delete product")
+            }
+
+            var responseBody = {
+                data : lodash.get(response, 'data', [])
+            }
+
+            return resolve(responseBody)
+        })
+        .catch(err =>{
+            return reject(err)
         })
     })
 

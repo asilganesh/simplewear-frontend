@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import logo from "../assets/logo.png";
-import { Link, Route, Routes, useLocation, useParams } from "react-router-dom";
+import { Link, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { IoIosList } from "react-icons/io";
 import { MdDone } from "react-icons/md";
@@ -9,16 +9,26 @@ import { IoMdClose } from "react-icons/io";
 import AddProduct from "../Pages/admin/AddProduct";
 import ListProducts from "../Pages/admin/ListProducts";
 import Orders from "../Pages/admin/Orders";
+import AdminLogin from "../Pages/admin/AdminLogin";
 
 const AdminLayout = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const location = useLocation();
   const path = useParams()
+  const navigate = useNavigate()
   console.log(path)
+
+  const adminLoggedIn = JSON.parse(localStorage.getItem('adminInfo'))
+
+ console.log(adminLoggedIn)
+
+
 
   useEffect(() => {
     document.title = "Simplewear Admin Panel";
-
+    if(!adminLoggedIn) {
+      navigate('/adminPanel/login')
+     }
     return () => (document.title = "Simplewear");
   }, []);
 
@@ -28,9 +38,19 @@ const AdminLayout = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
+  const clearAdminToken = () => {
+    localStorage.removeItem('adminInfo')
+    window.location.reload()
+  }
+
   return (
+
     <>
-      <section>
+      {
+        adminLoggedIn
+        ?
+<>
+<section>
         <div className="p-4 flex justify-between align-baseline border-b shadow-sm">
           <div>
             <img
@@ -44,7 +64,10 @@ const AdminLayout = () => {
           </div>
           <div className="flex">
             <div>
-              <button className="bg-black text-white p-2 border rounded-md mt-4 mr-5">
+              <button className="bg-black text-white p-2 border rounded-md mt-4 mr-5"
+              onClick={() => clearAdminToken()}
+              
+              >
                 Logout
               </button>
             </div>
@@ -182,6 +205,12 @@ const AdminLayout = () => {
           onClick={toggleDrawer}
         ></div>
       )}
+</>
+        :
+        <Routes>
+          <Route path="/login" element={<AdminLogin/>} />
+        </Routes>
+      }
     </>
   );
 };

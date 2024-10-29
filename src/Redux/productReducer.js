@@ -1,11 +1,10 @@
 import { createAsyncThunk, createReducer } from "@reduxjs/toolkit";
 import smStates from "../utils/sm_states/index";
-import fetchProductsAsync, { addProductAsync } from "../api/products";
+import fetchProductsAsync, { addProductAsync, deleteProductAync } from "../api/products";
 
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
   async ({ categories, sortOrder, searchText } = {}) => {
-    console.log(categories);
 
     const categoryFilters = [];
     const subCategoryFilters = [];
@@ -33,7 +32,7 @@ export const fetchProducts = createAsyncThunk(
       };
     }
     if (searchText) {
-      searchQuery.$or = [
+      searchQuery.filter.$or = [
         { name: { $regex: searchText, $options: "i" } },
         { category: { $regex: searchText, $options: "i" } },
         { subCategory: { $regex: searchText, $options: "i" } },
@@ -54,6 +53,13 @@ export const fetchProducts = createAsyncThunk(
 export const addProduct = createAsyncThunk('addNewProduct', async(product) => {
 
   const data = await addProductAsync(product)
+  return data
+})
+
+export const deleteProduct = createAsyncThunk ('removeProduct', async(productId) => {
+
+  const data = await deleteProductAync(productId)
+
   return data
 })
 
@@ -105,5 +111,24 @@ export const productReducer = createReducer(initialState, (builder) => {
       state.status = smStates.IS_FAILED;
     })
 
+    .addCase(deleteProduct.pending, state => {
+      state.loading = true;
+      state.status = smStates.IS_TRIGGERED;
+    })
+
+    .addCase(deleteProduct.fulfilled, (state,action) => {
+      state.loading = false;
+      state.status = smStates.IS_SUCCESSFUL;
+      state.products = action.payload.data.data
+      if (!action.payload) {
+        state.status = smStates.IS_SUCCESS_BUT_NO_DATA;
+      }
+    })
+
+    .addCase(deleteProduct.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+      state.status = smStates.IS_FAILED;
+    })
 
 });

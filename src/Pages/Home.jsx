@@ -11,10 +11,11 @@ import { RiExchangeFundsLine } from "react-icons/ri";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 import { AiFillCustomerService } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import Loader from "../Components/Loader";
 
 const Home = () => {
   const dispatch = useDispatch();
-  const { products } = useSelector((state) => state.productReducer);
+  const { products,loading } = useSelector((state) => state.productReducer);
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -38,7 +39,13 @@ const Home = () => {
 
 
   return (
-    <div className="home max-w-[1200px] w-[80vw] mx-auto">
+  <>
+  {
+loading
+?
+<Loader/>
+:
+<div className="home max-w-[1200px] w-[80vw] mx-auto">
       <section
         className="banner relative m-2 mb-20 "
         style={{ height: "70vh" }}
@@ -146,6 +153,8 @@ const Home = () => {
         </div>
       </section>
     </div>
+  }
+  </>
   );
 };
 

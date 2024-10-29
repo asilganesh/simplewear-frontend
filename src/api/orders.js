@@ -1,6 +1,7 @@
 import axios from "axios"
 import { SERVER_API } from "../Helper/serverUrl"
 import lodash from "lodash"
+import { getAdminToken } from "./products"
 
 
 const injectheader = () => {
@@ -114,7 +115,7 @@ export const addOrdersAsync = async(orderData) => {
 
 export const updateOrdersAsync =async(data) => {
     const headers = {
-        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MWExM2ZmMWRlYTQ3MWI1Zjk3OWY4MyIsIm5hbWUiOiJhZG1pbiIsIm1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJ0eXBlIjoiYWRtaW4iLCJpYXQiOjE3Mjk3NjU1NDF9.08TdVZ0r0FHTN7dNULgV12NIB4bH6xOep5B-91qavO8",
+        Authorization: `Bearer ${getAdminToken()}`,
         'Content-Type': 'application/json'
     }
 

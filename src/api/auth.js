@@ -58,7 +58,39 @@ export const  userLoginAsync = (userData) => {
             var responseBody = {
                 userDetails: lodash.get(response,'data',{})
             }
-debugger;
+
+            return resolve(responseBody)
+        })
+        .catch((err) => {
+            if (err.response) {
+              
+                console.log(err.response.data.message);
+                return reject(err.response.data.message);  
+            }
+            return reject(err)
+        })
+    })
+
+    return data
+}
+
+export const  adminLoginAsync = (adminData) => {
+
+    const data = new Promise((resolve,reject) => {
+        axios({
+            method: 'POST',
+            data: adminData,
+            url : `${SERVER_API}/adminLogin`,
+        })
+        .then((response) => {
+
+            if(response.status !== 200){
+                throw new Error("Login Failed")
+            }
+
+            var responseBody = {
+                adminDetails: lodash.get(response,'data',{})
+            }
             return resolve(responseBody)
         })
         .catch((err) => {

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function useAuthManager() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const auth = useSelector((state) => state.authReducer);
 
   useEffect(() => {

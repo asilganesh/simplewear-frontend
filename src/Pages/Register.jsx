@@ -3,7 +3,10 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../Redux/authReducer";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { CiUser } from "react-icons/ci";
+import { RiLockPasswordLine } from "react-icons/ri";
+import { MdAlternateEmail } from "react-icons/md";
 
 const Register = () => {
 
@@ -127,56 +130,69 @@ const navigate = useNavigate()
   }
   return (
     <>
-      <div>
+      <div
+        className="flex flex-col gap-2 justify-center items-center  bg-black "
+        style={{ height: "100vh" }}
+      >
+          <div className="text-white text-3xl">SIGN UP</div>
       <ToastContainer />
-        <form onSubmit={handleSubmit}>
-          <div>
+        <form onSubmit={handleSubmit}
+          className=" flex flex-col gap-5 border rounded-md border-white xsm:p-10  md:p-20 shadow-white"
+        >
+          <div className="flex gap-2">
+          <CiUser className="text-4xl  text-white" />
             <input
               type="text"
               placeholder="Name"
               value={name}
               onChange={handleNameChange}
-              className="border-black border"
+              className="border-white border-b-2 bg-black text-white p-2 w-full outline-none"
             />
-            {nameError && <span className="text-sm text-red-400">{nameError}</span>}
+            {nameError && <span className="text-sm text-white bg-red-500  absolute top-50 right-40 p-2 w-1/4 ">{nameError}</span>}
           </div>
 
-          <div>
+          <div className="flex gap-2">
+            <MdAlternateEmail  className="text-4xl  text-white" />
             <input
               type="email"
               placeholder="Email"
               value={mail}
               onChange={handleMailChange}
-              className="border-black border"
+              className="border-white border-b-2 bg-black text-white p-2 w-full outline-none"
             />
-            {mailError && <span className="text-sm text-red-400">{mailError}</span>}
+            {mailError && <span className="text-sm text-white bg-red-500  absolute top-50 right-40 p-2 w-1/4 ">{mailError}</span>}
           </div>
 
-          <div>
+          <div className="flex gap-2">
+            <RiLockPasswordLine className="text-4xl  text-white" />
             <input
               type="password"
               placeholder="Password"
               value={password}
               onChange={handlePasswordChange}
-              className="border-black border"
+              className="border-white border-b-2 bg-black text-white p-2 w-full outline-none"
             />
-            {passwordError && <span className="text-sm text-red-400">{passwordError}</span>}
+            {passwordError && <span className="text-sm text-white bg-red-500  absolute top-50 right-40 p-2 w-1/4 ">{passwordError}</span>}
           </div>
 
-          <div>
+          <div className="flex gap-2">
+            <RiLockPasswordLine className="text-4xl  text-white" />
             <input
               type="password"
               placeholder="Confirm Password"
               value={confirmPassword}
               onChange={handleConfirmPasswordChange}
-              className="border-black border"
+              className="border-white border-b-2 bg-black text-white p-2 w-full outline-none"
             />
-            {confirmPasswordError && <span className="text-sm text-red-400">{confirmPasswordError}</span>}
+            {confirmPasswordError && <span className="text-sm text-white bg-red-500  absolute top-50 right-40 p-2 w-1/4 ">{confirmPasswordError}</span>}
           </div>
 
           <button type="submit" className="mt-4 bg-blue-500 text-white px-4 py-2">
             Submit
           </button>
+          <div className="text-white text-md">Already have an account,  
+          <Link to="/auth/login"><span className="hover:text-blue-400 cursor-pointer"> Login here</span></Link>
+        </div>
         </form>
       </div>
     </>
