@@ -40,6 +40,7 @@ const AdminLayout = () => {
 
   const clearAdminToken = () => {
     localStorage.removeItem('adminInfo')
+    navigate('/adminPanel')
     window.location.reload()
   }
 

@@ -1,8 +1,8 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import Login from '../Pages/login'
-import Register from '../Pages/register'
-import PageNotFound from '../Pages/PageNotFound'
+import Login from '../Pages/Login.jsx'
+import Register from '../Pages/Register.jsx'
+import PageNotFound from '../Pages/PageNotFound.jsx'
 
 const AuthLayout = () => {
   return (

@@ -43,7 +43,7 @@ const AdminLogin = () => {
             autoClose: 200,
           });
          setTimeout(() => {
-            window.location.reload()
+          navigate('/adminPanel')
          },300)
 
 

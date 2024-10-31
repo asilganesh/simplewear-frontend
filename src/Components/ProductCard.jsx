@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 const ProductCard = ({productId,imgLink, title, price}) => {
+
+  
+
   return (
-   <Link to={`/productDetails/${productId} ` }  target="_blank">
+   <Link to={`/productDetails/${productId} ` }  target="_self">
     <div className='cursor-pointer shadow-md' >
               <div className='overflow-hidden'>
               <img

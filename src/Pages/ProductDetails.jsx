@@ -25,6 +25,8 @@ const ProductDetails = () => {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [selectedImg, setSelectedImg] = useState("");
   const [size, setSize] = useState("");
+const params = useParams()
+
 
   useEffect(() => {
     if (productData.image) {
@@ -48,7 +50,8 @@ const ProductDetails = () => {
   useEffect(() => {
     dispatch(fetchProductById(productId));
     dispatch(fetchProducts());
-  }, []);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [params]);
 
   const addProductToCart = (product) => {
     if (!size.length) {
